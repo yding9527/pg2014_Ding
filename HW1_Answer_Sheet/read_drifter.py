@@ -1,6 +1,7 @@
+import time
+
 def read_drifter(fname):
 	f=open(fname)
-	ff=open(fname)
 
 	names=[]
 
@@ -10,18 +11,25 @@ def read_drifter(fname):
 			names.append(data[1])
 
 	for name in names:
-		f=open(fname)
-		line=f.readline()
-		lines=line.split()
-		if name == lines[1] and 'Track' == lines[0]:
-			f.readline()
-			f.readline()
-			f.readline()
-			line=f.readline()
-			print line
+		ff=open(fname)
+		print name,1
+        while 1:
+			line=ff.readline()
 			lines=line.split()
-			print lines[0]
-			
+			print name,2
+			time.sleep(1)
+			if len(lines) == 7  and lines[1]==name and lines[0] == 'Track' :
+				print lines[1], lines[0], len(lines)
+				print name
+				time.sleep(1)
+
+#				break
+#				f.readline()
+#				f.readline()
+#				f.readline()
+#				line=f.readline()
+#				print line
+#				lines=line.split()
 
 
 
