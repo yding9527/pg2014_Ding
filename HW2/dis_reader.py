@@ -6,6 +6,7 @@
 #
 
 import datetime
+import numpy as np
 import matplotlib.pyplot as plt
 
 class Discharge(object):
@@ -51,12 +52,65 @@ class Discharge(object):
       else: 
           for yr in dates:
               if yr.year == year:
+                  if yr.month == 2 and yr.day ==29:
+                      continue
+
                   self.dates.append(yr)
                   self.disch.append(disch[dates.index(yr)])
 
+      self.dates = np.array(self.dates)
+      self.disch = np.array(self.disch)
+      return self.dates, self.disch
+
+  def hydro_plot(self):
       fig = plt.figure()
-      plt.plot(self.dates, self.disch)
-      fig.suptitle('Hydrograph Over %d'%year, fontsize=20)
+      dates, disch = self.reader()
+      plt.plot(dates, disch)
+      fig.suptitle('Hydrograph Over %d to %d'%((dates[0].year), (dates[-1].year)),fontsize=20)
       plt.xlabel('Time Series', fontsize=16)
       plt.ylabel('Discharge($m^3/s$)', fontsize=16)
-      return self.dates, self.disch
+
+  def annual_mean(self, year=None):
+      if year is None: 
+        print "No specific year indicated..."
+      else:
+        dates,disch = self.data_inquire(year)
+        mean = np.zeros(365) 
+        for iyear in year:
+          idate,idisch = self.data_inquire(iyear)
+          mean=mean+idisch
+
+        mean = mean/float(len(year))
+        self.mean = mean	
+      return self.mean
+
+  def compare_plot(self, year=None):
+      if year is None: 
+        print "No specific year indicated..."
+      elif year == 1967 or year == 2014:
+        print "Not enough samples within the year..."
+      else:
+        dates,disch = self.data_inquire(year)
+        lst = np.arange(1968,2014).tolist()
+        lst.remove(1980)
+        lst.remove(1981)
+        lst.remove(1982)
+        lst.remove(1983)
+        lst.remove(1984)
+        m_disch = self.annual_mean(lst)
+        plt.plot(dates,disch,'r-')	   
+        plt.plot(dates,m_disch,'b-')	 
+
+        dis=[]
+        std_dv=np.zeros(365)
+        for yr in lst:
+          tmp_dat,tmp_dis = self.data_inquire(yr)
+          dis.append(tmp_dis)
+        for i in range(365):
+          tmp = np.zeros(len(lst))                  
+          for j in range(len(lst)):
+            tmp[j]=dis[j][i]
+          std_dv[i]=np.std(tmp)		
+
+        plt.fill(dates,m_disch+abs(std_dv),'grey')
+        plt.fill(dates,m_disch-abs(std_dv),'grey')
