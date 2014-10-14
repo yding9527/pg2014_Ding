@@ -98,8 +98,6 @@ class Discharge(object):
         lst.remove(1983)
         lst.remove(1984)
         m_disch = self.annual_mean(lst)
-        plt.plot(dates,disch,'r-')	   
-        plt.plot(dates,m_disch,'b-')	 
 
         dis=[]
         std_dv=np.zeros(365)
@@ -112,5 +110,11 @@ class Discharge(object):
             tmp[j]=dis[j][i]
           std_dv[i]=np.std(tmp)		
 
-        plt.fill(dates,m_disch+abs(std_dv),'grey')
-        plt.fill(dates,m_disch-abs(std_dv),'grey')
+        plt.plot(dates,disch,'r-')	   
+        plt.plot(dates,m_disch,'k-')	 
+#        plt.fill(dates,abs(std_dv),'grey')
+#        plt.fill(dates,-abs(std_dv),'grey')
+#        plt.fill(dates,m_disch+abs(std_dv),'grey')
+#        plt.fill(dates,m_disch-abs(std_dv),'grey')
+        plt.fill_between(dates,m_disch,m_disch+abs(std_dv),facecolor='grey')
+        plt.fill_between(dates,m_disch,m_disch-abs(std_dv),facecolor='grey')
