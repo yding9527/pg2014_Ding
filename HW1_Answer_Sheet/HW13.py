@@ -1,6 +1,15 @@
+#Yifeng Ding
+#Readin discharge data
+
 import datetime
 
 def file_reader(filename):
+  """Readin data from the file, discharge.dat, return a list of dates and discharge states.
+  
+  inputs:filename
+  
+  outputs:date list and discharge states"""
+  
   f = open(filename)
   result=list()
   date=list()
