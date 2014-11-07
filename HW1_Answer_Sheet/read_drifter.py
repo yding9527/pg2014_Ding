@@ -1,6 +1,19 @@
+#Yifeng Ding
+#Read in data from the file drifter.dat.  Return as a dictionary
+
+
 import time
 
 def read_drifter(fname):
+	"""Read in data from the file drifter.dat.
+	Return a dictionary based on the track name as indices.
+	Return a list of lat/lon pairs.
+	
+	inputs:fname
+	
+	outputs:dic, a dictionary based on the track name as indices."""
+	
+	
 	f=open(fname)
 
 	names=[]
@@ -38,3 +51,6 @@ def read_drifter(fname):
 				break
            
 	return dic
+	
+if __name__=='__main__':
+	data = read_drifter('drifter.dat')
