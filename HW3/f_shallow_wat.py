@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import pylab
+import netCDF4
 
 class shallow_wat(object):
 
@@ -20,11 +21,11 @@ class shallow_wat(object):
 	def eta(self):
 		g=9.8
 		t=np.array(range(0,self.nt))
-		x=np.array(range(0,self.np))
+		x=np.arange(0.0, self.np*self.dx, self.dx) 
+		
 		eta=np.array(np.zeros([self.np,self.nt]))
 		u  =np.array(np.zeros([self.np+1,self.nt]))
-#		eta[self.np/2.,0]=self.H/2.
-		eta[0,0]=self.H/2.
+		eta[0:self.np/10.,0]=self.H/2.
 
 
 		T,X=np.meshgrid(t,x)
@@ -41,9 +42,38 @@ class shallow_wat(object):
 		self.eta=eta
 		self.X  =X
 		self.T  =T
+		
+		# create netcdf file
+		nc = netCDF4.Dataset('Output.nc', 'w')
+		nc.author = 'Yifeng Ding'
+
+		nc.createDimension('x', self.np)
+		nc.createDimension('time', self.nt)
+
+		nc.createVariable('eta', 'd', ('time', 'x'))
+		nc.variables['eta'][:] = self.eta
+		nc.variables['eta'].units = 'meters'
+		
+		nc.createVariable('x', 'd', ('x',))
+		nc.variables['x'][:] = x
+		nc.variables['x'].units = 'meters'
+		
+		nc.createVariable('time', 'd', ('time',))
+		nc.variables['time'][:] = t
+		nc.variables['time'].units = 'seconds'
+		
+		nc.close()
+		
+		
 
 import matplotlib.pyplot as plt  
 if __name__ == '__main__':
+	H = 10.0 # (m)
+	dt = 100.0 # (s)
+	dx = 1000.0 # (m)
+	n_pts = 10000  
+	n_time = 200
+	
 	data=shallow_wat(n_time=100,n_pts=21,H=10.,dx=100.,dt=5.0)
 	data.eta()
 
